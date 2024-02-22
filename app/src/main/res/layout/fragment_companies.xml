@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.companies.CompaniesFragment"
+    android:background="@color/custom_tan" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:foregroundGravity="center_vertical"
+            app:hintEnabled="false"
+            app:endIconDrawable="@drawable/filled_cancel_icon"
+            app:endIconTint="@color/blue"
+            app:boxBackgroundMode="none"
+            app:endIconMode="clear_text" >
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_bar_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="6dp"
+                android:paddingVertical="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center_vertical"
+                android:ellipsize="start"
+                android:background="@drawable/search_bar_shape"
+                android:drawableStart="@drawable/search_icon"
+                android:drawableTint="@color/blue"
+                android:drawablePadding="10dp"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:hint="Search" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/blue"
+            android:paddingStart="4dp"
+            android:paddingEnd="2dp"
+            app:layout_constraintStart_toEndOf="@id/text_input_layout"
+            app:layout_constraintTop_toTopOf="@id/text_input_layout"
+            app:layout_constraintBottom_toBottomOf="@id/text_input_layout"
+            android:text="Cancel"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:dividerColor="@color/blue" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp" />
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
