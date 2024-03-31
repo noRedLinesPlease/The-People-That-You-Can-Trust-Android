@@ -1,5 +1,6 @@
 package cornhole.beanbag.thepeopleyoucantrust.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
