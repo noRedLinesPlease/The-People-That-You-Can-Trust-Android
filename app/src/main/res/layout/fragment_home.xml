@@ -1,103 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content"
+    tools:context=".ui.home.HomeFragment">
+
+    <ProgressBar
+        android:id="@+id/progress_bar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:dividerColor="@color/blue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/header_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.home.HomeFragment"
-        android:background="@color/custom_tan" >
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="6dp"
+        android:fontFamily="@font/bungee_font"
+        android:textAlignment="center"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.divider.MaterialDivider
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:dividerColor="@color/blue" />
+    <ImageView
+        android:id="@+id/about_us_image"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="#ff591c"
+        android:foregroundGravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/about_us_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_text" />
 
-        <TextView
-            android:id="@+id/header_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/bungee_font"
-            android:textAlignment="center"
-            android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/body_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/truculenta_font"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/about_us_image" />
 
-        <ImageView
-            android:id="@+id/about_us_image"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:scaleType="fitCenter"
-            android:background="#ff591c"
-            android:src="@drawable/about_us_image"
-            app:layout_constraintTop_toBottomOf="@id/header_text"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="10dp"
-            android:foregroundGravity="center" />
+    <TextView
+        android:id="@+id/subHeaderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/protest_guerrilla"
+        android:gravity="center"
+        android:textColor="#45C0C6"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@id/body_text"
+        app:layout_constraintTop_toBottomOf="@id/body_text" />
 
-        <TextView
-            android:id="@+id/body_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="16dp"
-            android:textAlignment="center"
-            android:fontFamily="@font/salsa_font"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/about_us_image"
-            app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/subHeaderBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:paddingBottom="15dp"
+        android:textAlignment="center"
+        android:textSize="17sp"
+        android:fontFamily="@font/kurale_regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subHeaderText" />
 
-        <TextView
-            android:id="@+id/subHeaderText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/rubik_burned_font"
-            android:textSize="28sp"
-            android:gravity="center"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:textColor= "@color/black"
-            android:background="#45C0C6"
-            app:layout_constraintTop_toBottomOf="@id/body_text"
-            app:layout_constraintStart_toStartOf="@id/body_text"
-            />
+    <Button
+        android:id="@+id/navigate_to_companies_page_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="14dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#45C0C6"
+        android:fontFamily="@font/permanent_marker_font"
+        android:text="@string/companies_button_text"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subHeaderBody" />
 
-        <TextView
-            android:id="@+id/subHeaderBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/subHeaderText"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:paddingBottom="20dp"/>
-
-        <Button
-            android:id="@+id/navigate_to_companies_page_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subHeaderBody"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="#ff591c"
-            android:text="@string/companies_button_text" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

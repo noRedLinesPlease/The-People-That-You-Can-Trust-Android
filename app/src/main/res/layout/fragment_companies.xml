@@ -5,10 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.companies.CompaniesFragment"
-    android:background="@color/custom_tan" >
+    tools:context=".ui.companies.CompaniesFragment" >
+
+    <ProgressBar
+        android:id="@+id/progress_bar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/companies_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -16,65 +23,65 @@
             android:id="@+id/text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:foregroundGravity="center_vertical"
-            app:hintEnabled="false"
-            app:endIconDrawable="@drawable/filled_cancel_icon"
-            app:endIconTint="@color/blue"
             app:boxBackgroundMode="none"
-            app:endIconMode="clear_text" >
-
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/cancel_vector"
+            app:endIconTint="@color/blue"
+            app:hintEnabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_bar_view"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:paddingVertical="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:gravity="center_vertical"
-                android:ellipsize="start"
-                android:background="@drawable/search_bar_shape"
+                android:textColor="@color/black"
                 android:drawableStart="@drawable/search_icon"
-                android:drawableTint="@color/blue"
                 android:drawablePadding="10dp"
+                android:drawableTint="@color/blue"
+                android:background="@drawable/search_bar_shape"
+                android:ellipsize="start"
+                android:gravity="center_vertical"
+                android:hint="Search"
+                android:textColorHint="@color/grey"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
-                android:hint="Search" />
+                android:paddingVertical="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="@color/blue"
             android:paddingStart="4dp"
             android:paddingEnd="2dp"
-            app:layout_constraintStart_toEndOf="@id/text_input_layout"
-            app:layout_constraintTop_toTopOf="@id/text_input_layout"
+            android:text="Cancel"
+            android:textColor="@color/blue"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/text_input_layout"
-            android:text="Cancel"/>
+            app:layout_constraintStart_toEndOf="@id/text_input_layout"
+            app:layout_constraintTop_toTopOf="@id/text_input_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.divider.MaterialDivider
+    <TextView
+        android:id="@+id/error_view"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:dividerColor="@color/blue" />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingBottom="12dp"
+        android:text="@string/internal_error_message"
+        android:textSize="24sp"
+        android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="12dp" />
-    </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

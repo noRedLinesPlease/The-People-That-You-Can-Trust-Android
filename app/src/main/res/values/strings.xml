@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">The People That You Can Trust™</string>
-    <string name ="trademark_symbol">™</string>
+    <string name="app_name">The People That You Can Trust</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -9,6 +8,9 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_companies">Companies</string>
-    <string name="companies_button_text">View companies</string>
+    <string name="companies_button_text">Search companies</string>
+    <string name="no_internet_error_message">No internet connection found.</string>
+    <string name="no_internet_error_message_2">Please check connection and try again</string>
+    <string name="internal_error_message">We\'re having some technical difficulties right now. We\'re on it! </string>
 
 </resources>

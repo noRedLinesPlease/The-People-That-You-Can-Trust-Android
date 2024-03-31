@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <ImageView
         android:id="@+id/company_logo_search_result"
@@ -15,8 +15,10 @@
         android:id="@+id/company_name_search_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/company_logo_search_result"
         app:layout_constraintTop_toTopOf="@id/company_logo_search_result"
         app:layout_constraintBottom_toBottomOf="@id/company_logo_search_result" />

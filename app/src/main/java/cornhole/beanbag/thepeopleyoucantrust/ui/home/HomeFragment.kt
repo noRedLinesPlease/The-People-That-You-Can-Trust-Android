@@ -1,8 +1,8 @@
 package cornhole.beanbag.thepeopleyoucantrust.ui.home
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,22 +10,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import cornhole.beanbag.thepeopleyoucantrust.MainActivity
 import cornhole.beanbag.thepeopleyoucantrust.R
 import cornhole.beanbag.thepeopleyoucantrust.databinding.FragmentHomeBinding
-import cornhole.beanbag.thepeopleyoucantrust.ui.companies.CompaniesFragment
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    //private var isLoading = true
 
     private lateinit var aboutUsHeaderTV: TextView
     private lateinit var aboutUsBodyTV: TextView
@@ -39,11 +34,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val galleryViewModel =
-            ViewModelProvider(this)[CompaniesViewModel::class.java]
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         aboutUsHeaderTV = binding.headerText
         aboutUsBodyTV = binding.bodyText
         aboutUsSubHeaderTV = binding.subHeaderText
@@ -58,11 +49,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navigateToCompaniesButton.setOnClickListener {
-             findNavController().navigate(R.id.action_navigate_to_companies)
+            findNavController().navigate(R.id.action_navigate_to_companies)
         }
     }
 
     private fun getAboutUsPage() {
+        binding.progressBarView.visibility = View.VISIBLE
+        binding.homeLayout.visibility = View.GONE
+
         Thread {
             var header = ""
             var body = ""
@@ -81,6 +75,13 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 Log.v("BM90", e.message.toString())
             }
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    binding.progressBarView.visibility = View.GONE
+                    binding.homeLayout.visibility = View.VISIBLE
+                },
+                300
+            )
 
             activity?.runOnUiThread {
                 aboutUsHeaderTV.text = header
@@ -88,7 +89,6 @@ class HomeFragment : Fragment() {
                 aboutUsSubHeaderTV.text = subHeader
                 aboutUsSubHeaderBodyTV.text = subHeaderBody
             }
-
         }.start()
     }
 

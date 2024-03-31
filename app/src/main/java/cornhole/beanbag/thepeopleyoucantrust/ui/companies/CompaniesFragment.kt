@@ -2,7 +2,8 @@ package cornhole.beanbag.thepeopleyoucantrust.ui.companies
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.ColorStateList
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,23 +17,20 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
-import cornhole.beanbag.thepeopleyoucantrust.R
+import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitLogic
 import cornhole.beanbag.thepeopleyoucantrust.databinding.FragmentCompaniesBinding
-import cornhole.beanbag.thepeopleyoucantrust.ui.home.CompaniesViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-class CompaniesFragment : Fragment() {
+class CompaniesFragment : Fragment(), OnClickAdapter {
     private var _binding: FragmentCompaniesBinding? = null
     private val binding get() = _binding!!
 
@@ -50,12 +48,10 @@ class CompaniesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(CompaniesViewModel::class.java)
-
         val context = requireContext()
 
         _binding = FragmentCompaniesBinding.inflate(inflater, container, false)
+
         searchBarLayout = binding.textInputLayout
         searchBarView = binding.searchBarView
         val cancelButton = binding.cancelButton
@@ -63,25 +59,27 @@ class CompaniesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         searchResultsAdapter = SearchResultAdapter(
             filteredList,
-            context
-        ) { onVHClick() }
+            context,
+            this
+        )
+
+        binding.progressBarView.visibility = View.VISIBLE
+        binding.companiesLayout.visibility = View.GONE
 
         val scale = context.resources.displayMetrics.density
         val pixels = (320 * scale + 0.5f)
-        val colorInt: Int = context.getColor(R.color.blue)
-        val csl = ColorStateList.valueOf(colorInt)
 
         searchBarLayout.isEndIconVisible = false
 
         searchBarView.onFocusChangeListener = View.OnFocusChangeListener { _, focused ->
             if (focused) {
-                if(searchBarView.text.isNotEmpty()) {
+                if (searchBarView.text.isNotEmpty()) {
                     searchBarLayout.isEndIconVisible = true
                 }
                 searchBarLayout.layoutParams.width = pixels.toInt()
                 cancelButton.visibility = View.VISIBLE
             } else {
-                if(filteredList.isNotEmpty()) {
+                if (filteredList.isNotEmpty()) {
                     getDefaultView()
                     adapter.updateCompaniesList(filteredList)
                 } else {
@@ -119,8 +117,8 @@ class CompaniesFragment : Fragment() {
 
                     if (apiResponse != null) {
                         companyList = apiResponse.companies
-                        Log.v("BM90", companyList.toString())
-                        adapter = BusinessRVAdapter(companyList, context)
+                        binding.progressBarView.visibility = View.GONE
+                        binding.companiesLayout.visibility = View.VISIBLE
                         getDefaultView()
                         filterSearchResults()
                     }
@@ -144,16 +142,15 @@ class CompaniesFragment : Fragment() {
         searchBarView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(searchBarView.text.isEmpty()) {
-                    getDefaultView()
-                    adapter.updateCompaniesList(companyList)
-                }
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-            override fun afterTextChanged(s: Editable?) {
+            override fun afterTextChanged(searchText: Editable?) {
                 filteredList = companyList.filter {
-                    it.searchTagsAsString.contains(s.toString())
+                    it.searchTagsAsString.contains(
+                        searchText.toString().trim(),
+                        ignoreCase = true
+                    ) ||
+                            it.companyName.contains(searchText.toString().trim(), ignoreCase = true)
                 } as ArrayList<CompanyInfo>
 
                 if (searchBarView.text.isNotEmpty()) {
@@ -174,14 +171,8 @@ class CompaniesFragment : Fragment() {
         }
     }
 
-    private fun onVHClick() {
-        recyclerView.adapter = adapter
-        adapter.updateCompaniesList(filteredList)
-        searchBarView.clearFocus()
-        searchBarLayout.isEndIconVisible = false
-    }
-
     fun getDefaultView() {
+        adapter = BusinessRVAdapter(companyList, requireContext(), this)
         recyclerView.adapter = adapter
     }
 
@@ -195,14 +186,26 @@ class CompaniesFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-//    override fun onStop() {
-//        super.onStop()
-//        searchBarView.text.clear()
-//        searchBarView.clearFocus()
-//    }
+    override fun onStop() {
+        super.onStop()
+        searchBarView.clearFocus()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun showErrorOnClick() {
+        binding.recyclerView.visibility = View.GONE
+        binding.errorView.visibility = View.VISIBLE
+    }
+
+    override fun navigateToWebsiteOnClick(companyWebsiteLink: String) {
+        binding.errorView.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
+        val url = Uri.parse(companyWebsiteLink)
+        val sendIntent = Intent(Intent.ACTION_VIEW, url)
+        startActivity(sendIntent)
     }
 }

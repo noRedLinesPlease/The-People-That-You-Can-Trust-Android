@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginVertical="10dp"
+        android:src="@drawable/app_logo_vector"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/no_internet_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:layout_marginVertical="14dp"
+        android:fontFamily="@font/permanent_marker_font"
+        android:gravity="center_horizontal"
+        android:text="@string/no_internet_error_message"
+        android:textSize="38sp" />
+
+    <TextView
+        android:id="@+id/no_internet_subtext"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.4"
+        android:fontFamily="@font/truculenta_font"
+        android:gravity="center_horizontal"
+        android:text="@string/no_internet_error_message_2"
+        android:textSize="38sp" />
+</LinearLayout>
