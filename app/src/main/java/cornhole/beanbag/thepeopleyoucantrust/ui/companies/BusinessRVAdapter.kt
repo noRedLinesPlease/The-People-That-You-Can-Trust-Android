@@ -9,9 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
-import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.R
+import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
+import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
 
 class BusinessRVAdapter(
     private var companyList: ArrayList<CompanyInfo>,
@@ -36,9 +36,6 @@ class BusinessRVAdapter(
         holder.itemView.setOnClickListener {
             try {
                 onClickVH.navigateToWebsiteOnClick(companyWebsiteString)
-//                val url = Uri.parse(companyWebsiteString)
-//                val sendIntent = Intent(Intent.ACTION_VIEW, url)
-//                startActivity(context, sendIntent, null)
             } catch (e: ActivityNotFoundException) {
                     onClickVH.showErrorOnClick()
             }

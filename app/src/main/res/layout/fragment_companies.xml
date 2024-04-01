@@ -22,7 +22,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:foregroundGravity="center_vertical"
             app:boxBackgroundMode="none"
             app:endIconMode="clear_text"
@@ -36,7 +36,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_bar_view"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_margin="6dp"
                 android:textColor="@color/black"
                 android:drawableStart="@drawable/search_icon"
@@ -57,12 +57,13 @@
         <TextView
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:paddingStart="4dp"
             android:paddingEnd="2dp"
             android:text="Cancel"
             android:textColor="@color/blue"
             android:textSize="18sp"
+            android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="@id/text_input_layout"
             app:layout_constraintStart_toEndOf="@id/text_input_layout"
             app:layout_constraintTop_toTopOf="@id/text_input_layout" />
