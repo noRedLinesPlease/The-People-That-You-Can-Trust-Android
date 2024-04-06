@@ -1,6 +1,5 @@
 package cornhole.beanbag.thepeopleyoucantrust.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -16,10 +15,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import com.google.android.material.navigation.NavigationView.VISIBLE
-import cornhole.beanbag.thepeopleyoucantrust.network.NetworkConnection
 import cornhole.beanbag.thepeopleyoucantrust.R
 import cornhole.beanbag.thepeopleyoucantrust.databinding.ActivityMainBinding
+import cornhole.beanbag.thepeopleyoucantrust.network.NetworkConnection
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private lateinit var appBarConfiguration: AppBarConfiguration

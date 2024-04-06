@@ -17,6 +17,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
@@ -26,6 +31,7 @@ import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitLogic
 import cornhole.beanbag.thepeopleyoucantrust.databinding.FragmentCompaniesBinding
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,12 +49,16 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
     lateinit var companyList: ArrayList<CompanyInfo>
     private var filteredList: ArrayList<CompanyInfo> = arrayListOf()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val context = requireContext()
+        val viewModel: CompaniesViewModel by lazy {
+            ViewModelProvider(this)[CompaniesViewModel::class.java]
+        }
 
         _binding = FragmentCompaniesBinding.inflate(inflater, container, false)
 
@@ -63,7 +73,7 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
             this
         )
 
-        binding.progressBarView.visibility = View.VISIBLE
+        //binding.progressBarView.visibility = View.VISIBLE
         binding.companiesLayout.visibility = View.GONE
 
         val scale = context.resources.displayMetrics.density
@@ -104,33 +114,30 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
             searchBarView.clearFocus()
         }
 
-        //Create an ApiService instance from the Retrofit instance.
-        val retrofitApi = RetrofitLogic.retrofit
-        val service: RetrofitAPI = retrofitApi.create(RetrofitAPI::class.java)
-        val call: Call<CompanyList> =
-            service.getCompanies("PHYSICAL")
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading.observe(viewLifecycleOwner) {
+                if (!it) {
+                    binding.progressBarView.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                    binding.companiesLayout.visibility = View.VISIBLE
+                    companyList = viewModel.companyList.value ?: arrayListOf()
 
-        call.enqueue(object : Callback<CompanyList> {
-            override fun onResponse(call: Call<CompanyList>, response: Response<CompanyList>) {
-                if (response.isSuccessful) {
-                    val apiResponse: CompanyList? = response.body()
-
-                    if (apiResponse != null) {
-                        companyList = apiResponse.companies
-                        binding.progressBarView.visibility = View.GONE
-                        binding.companiesLayout.visibility = View.VISIBLE
+                    if (viewModel.companyList.value.isNullOrEmpty()) {
+                        binding.recyclerView.visibility = View.GONE
+                        binding.companiesLayout.visibility = View.GONE
+                        binding.errorView.visibility = View.VISIBLE
+                    } else {
+                        binding.recyclerView.visibility = View.VISIBLE
                         getDefaultView()
                         filterSearchResults()
                     }
+                } else {
+                    binding.progressBarView.visibility = View.VISIBLE
+                    binding.companiesLayout.visibility = View.GONE
                 }
-            }
 
-            override fun onFailure(call: Call<CompanyList>, t: Throwable) {
-                Toast.makeText(context, "Request Fail", Toast.LENGTH_SHORT).show()
-                Log.v("BM90", "Parsing error")
             }
-        })
-
+        }
         return binding.root
     }
 
@@ -149,8 +156,7 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
                     it.searchTagsAsString.contains(
                         searchText.toString().trim(),
                         ignoreCase = true
-                    ) ||
-                            it.companyName.contains(searchText.toString().trim(), ignoreCase = true)
+                    ) || it.companyName.contains(searchText.toString().trim(), ignoreCase = true)
                 } as ArrayList<CompanyInfo>
 
                 if (searchBarView.text.isNotEmpty()) {
