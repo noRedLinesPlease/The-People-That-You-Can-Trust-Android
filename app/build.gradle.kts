@@ -13,19 +13,19 @@ android {
         applicationId = "cornhole.beanbag.thepeopleyoucantrust"
         minSdk = 30
         targetSdk = 34
-        versionCode = 7
+        versionCode = 10
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isShrinkResources = true
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -38,6 +38,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    buildToolsVersion = "35.0.0 rc2"
 }
 
 dependencies {

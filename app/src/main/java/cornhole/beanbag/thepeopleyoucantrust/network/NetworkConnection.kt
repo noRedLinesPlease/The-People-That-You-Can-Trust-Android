@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 
 class NetworkConnection(context: Context) {
-         val connectivityManager =
+         private val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         private val _isConnected = MutableStateFlow(false)

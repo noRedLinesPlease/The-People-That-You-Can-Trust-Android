@@ -1,9 +1,6 @@
 package cornhole.beanbag.thepeopleyoucantrust.ui.companies
 
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +16,7 @@ import retrofit2.Response
 class CompaniesViewModel : ViewModel() {
 
     var companyList = MutableLiveData<ArrayList<CompanyInfo>?>()
-    var isLoading = MutableLiveData<Boolean>(true)
+    var isLoading = MutableLiveData(true)
     init {
         viewModelScope.launch {
 

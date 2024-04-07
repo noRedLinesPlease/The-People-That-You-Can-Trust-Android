@@ -1,6 +1,5 @@
 package cornhole.beanbag.thepeopleyoucantrust.api
 
-import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers

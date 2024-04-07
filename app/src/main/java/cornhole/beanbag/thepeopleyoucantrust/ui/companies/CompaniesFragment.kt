@@ -7,34 +7,23 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
-import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
-import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
-import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
-import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitLogic
 import cornhole.beanbag.thepeopleyoucantrust.databinding.FragmentCompaniesBinding
+import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CompaniesFragment : Fragment(), OnClickAdapter {
     private var _binding: FragmentCompaniesBinding? = null
@@ -73,7 +62,6 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
             this
         )
 
-        //binding.progressBarView.visibility = View.VISIBLE
         binding.companiesLayout.visibility = View.GONE
 
         val scale = context.resources.displayMetrics.density
@@ -128,6 +116,7 @@ class CompaniesFragment : Fragment(), OnClickAdapter {
                         binding.errorView.visibility = View.VISIBLE
                     } else {
                         binding.recyclerView.visibility = View.VISIBLE
+                        binding.companiesLayout.visibility = View.VISIBLE
                         getDefaultView()
                         filterSearchResults()
                     }
