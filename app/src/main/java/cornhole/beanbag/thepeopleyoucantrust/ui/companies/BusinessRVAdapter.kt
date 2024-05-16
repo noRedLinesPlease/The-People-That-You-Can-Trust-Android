@@ -37,9 +37,8 @@ class BusinessRVAdapter(
             try {
                 onClickVH.navigateToWebsiteOnClick(companyWebsiteString)
             } catch (e: ActivityNotFoundException) {
-                    onClickVH.showErrorOnClick()
+                onClickVH.showErrorOnClick()
             }
-
         }
     }
 

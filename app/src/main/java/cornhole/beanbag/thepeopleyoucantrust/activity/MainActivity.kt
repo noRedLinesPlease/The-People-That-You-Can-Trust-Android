@@ -1,9 +1,18 @@
 package cornhole.beanbag.thepeopleyoucantrust.activity
 
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -19,6 +28,7 @@ import cornhole.beanbag.thepeopleyoucantrust.R
 import cornhole.beanbag.thepeopleyoucantrust.databinding.ActivityMainBinding
 import cornhole.beanbag.thepeopleyoucantrust.network.NetworkConnection
 
+
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -28,8 +38,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private lateinit var navView: NavigationView
     private lateinit var viewModel: MainViewModel
 
+    private var isDarkMode = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDarkMode = isPhoneInDarkMode(this)
 
         val networkConnection = NetworkConnection(this)
 
@@ -42,12 +55,19 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         setContentView(binding.root)
         drawerLayout = binding.drawerLayout
 
-        viewModel.isOnline.observe(this) {
-            if (!it) {
+        viewModel.isOnline.observe(this) { hasInternetConnection ->
+            if (!hasInternetConnection) {
                 binding.hasInternetViewId.root.visibility = View.GONE
                 binding.noInternetViewId.root.visibility = View.VISIBLE
                 binding.appBar.visibility = View.GONE
             } else {
+                viewModel.checkForAppUpdate(this)
+                viewModel.appNeedsToBeUpdated.observe(this) { updateNeeded ->
+                    if (updateNeeded && viewModel.dialogShowedOnce.value == false) {
+                        showCustomDialog()
+                    }
+                }
+
                 binding.appBar.visibility = View.VISIBLE
                 binding.noInternetViewId.root.visibility = View.GONE
                 binding.hasInternetViewId.root.visibility = View.VISIBLE
@@ -62,8 +82,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
                 appBarConfiguration = AppBarConfiguration(
                     setOf(
-                        R.id.nav_home,
-                        R.id.nav_companies
+                        R.id.nav_about_us,
+                        R.id.nav_browse_companies,
+                        R.id.nav_search_companies,
+                        R.id.nav_share_app
                     ),
                     drawerLayout
                 )
@@ -84,21 +106,104 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val bundleMain = Bundle()
+
         return when (item.title) {
-            "Home" -> {
-                navController.navigate(R.id.nav_home)
+            "About Us" -> {
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_about_us, bundleMain)
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
 
-            "Companies" -> {
-                navController.navigate(R.id.nav_companies)
+            "Browse Companies" -> {
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_browse_companies, bundleMain)
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
 
+            "Search Companies" -> {
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_search_companies, bundleMain)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+
+            "Share App" -> {
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_share_app, bundleMain)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
             else -> false
+        }
+    }
 
+    private fun isPhoneInDarkMode(activity: Activity): Boolean {
+        return activity.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    private fun showCustomDialog() {
+        viewModel.dialogShowedOnce.value = true
+        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
+        with(builder) {
+            val titleTextView = TextView(context)
+            titleTextView.text = resources.getString(R.string.app_update_title_text)
+            titleTextView.textSize = 24F
+            setCustomTitle(titleTextView)
+            setMessage(resources.getString(R.string.app_update_body_text))
+            setPositiveButton(
+                R.string.pop_up_dialog_update_btn_text
+            ) { _, _ ->
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=cornhole.beanbag.thepeopleyoucantrust")
+                )
+                startActivity(intent)
+            }
+            setNegativeButton(R.string.pop_up_dialog_dismiss_btn_text) { dialog, _ ->
+                dialog.dismiss()
+                val bundleMain = Bundle()
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_search_companies, bundleMain)
+            }
+
+        }
+
+        val alertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawableResource(R.drawable.round_popup_dialog)
+        alertDialog.show()
+
+        val updateButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+        with(updateButton)
+        {
+            setBackgroundColor(
+                if (isDarkMode) (resources.getColor(R.color.darkModePopupBackgroundColor, null))
+                else resources.getColor(R.color.dayModePopupBackgroundColor, null)
+            )
+            setPadding(0, 0, 0, 0)
+            setTextColor(
+                if (isDarkMode)
+                    (Color.WHITE)
+                else Color.BLACK
+            )
+        }
+
+        val dismissButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+        with(dismissButton)
+        {
+            setBackgroundColor(
+                if (isDarkMode) resources.getColor(R.color.darkModePopupBackgroundColor, null)
+                else resources.getColor(R.color.dayModePopupBackgroundColor, null)
+            )
+            setPadding(0, 0, 60, 0)
+            setTextColor(
+                if (isDarkMode)
+                    (Color.WHITE)
+                else Color.BLACK
+            )
         }
     }
 }

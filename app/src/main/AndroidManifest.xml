@@ -18,7 +18,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ThePeopleYouCanTrust.NoActionBar"
+            android:theme="@style/Theme.ThePeopleYouCanTrust"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

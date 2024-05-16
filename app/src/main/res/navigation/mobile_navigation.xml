@@ -3,22 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_search_companies">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        android:id="@+id/nav_about_us"
+        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.aboutUs.AboutUsFragment"
+        android:label="@string/menu_about_us"
+        tools:layout="@layout/about_us_fragment" >
         <action
             android:id="@+id/action_navigate_to_companies"
-            app:destination="@id/nav_companies" />
+            app:destination="@id/nav_browse_companies" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_browse_companies"
+        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.companies.BrowseCompaniesFragment"
+        android:label="@string/menu_browse_companies"
+        tools:layout="@layout/browse_all_companies_layout" >
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_companies"
-        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.companies.CompaniesFragment"
-        android:label="@string/menu_companies"
-        tools:layout="@layout/fragment_companies" />
+        android:id="@+id/nav_search_companies"
+        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.companies.SearchCompaniesFragment"
+        android:label="@string/menu_search_companies"
+        tools:layout="@layout/search_companies_fragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_share_app"
+        android:name="cornhole.beanbag.thepeopleyoucantrust.ui.shareApp.ShareAppFragment"
+        android:label="@string/menu_share_app"
+        tools:layout="@layout/share_app_fragment" >
+    </fragment>
 </navigation>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/share_app_header"
+        android:text="@string/share_app_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bungee_spice_regular"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        android:paddingBottom="12dp"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/blue" />
+
+    <TextView
+        android:id="@+id/share_app_body_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share_app_body_text"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/teal_200"
+        android:fontFamily="@font/sansita_swashed_semi_bold"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="24dp"
+        android:paddingBottom="1dp">
+
+    <ImageView
+        android:id="@+id/ios_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ios_icon_app" />
+
+    <TextView
+            android:id="@+id/ios_text"
+            android:text="@string/ios_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/truculenta_semi_bold"
+            android:textSize="54sp"
+            android:textColor="@color/blue" />
+
+        <ImageView
+            android:id="@+id/ios_copy_icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/copy_icon"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ios_qr_code"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:src="@drawable/ios_qr_code"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="24dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/android_image"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="12dp"
+            android:layout_gravity="center"
+            android:src="@drawable/android_icon_app" />
+
+        <TextView
+            android:id="@+id/android_text"
+            android:text="@string/android_text"
+            android:textSize="50sp"
+            android:fontFamily="@font/truculenta_semi_bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/androidIconColor" />
+
+        <ImageView
+            android:id="@+id/android_copy_icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/copy_icon"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/android_qr_code"
+        android:layout_gravity="center"
+        android:paddingBottom="24dp"/>
+
+</LinearLayout>

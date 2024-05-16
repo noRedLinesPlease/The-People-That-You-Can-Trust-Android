@@ -21,7 +21,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:background="@color/grey"/>
     </com.google.android.material.appbar.AppBarLayout>
 
 <androidx.drawerlayout.widget.DrawerLayout
@@ -42,6 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         app:itemIconPadding="12dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:visibility="visible"
         android:background="@drawable/drawer_selection"
         app:itemBackground="@drawable/drawer_selection"
