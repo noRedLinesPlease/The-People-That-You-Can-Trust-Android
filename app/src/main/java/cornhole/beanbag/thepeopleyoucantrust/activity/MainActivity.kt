@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 binding.hasInternetViewId.root.visibility = View.VISIBLE
 
                 setSupportActionBar(binding.toolbar)
+                supportActionBar?.setDisplayShowTitleEnabled(false)
 
                 navView = binding.navView
 
