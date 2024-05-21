@@ -13,7 +13,5 @@
         <item name="android:textAlignment">center</item>
         <item name="android:headerDividersEnabled">true</item>
         <item name="android:windowBackground">@color/dayModePopupBackgroundColor</item>
-        <item name="windowMinWidthMajor">0%</item>
-        <item name="windowMinWidthMinor">0%</item>
     </style>
 </resources>

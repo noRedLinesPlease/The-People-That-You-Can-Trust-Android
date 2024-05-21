@@ -2,7 +2,8 @@
 <resources>
     <color name="search_bar_grey">#50D3D3D3</color>
     <color name="grey">#B2B2B2</color>
-    <color name="blue">#1616ff</color>
+    <color name="blue">#501616ff</color>
+    <color name="custom_blue">#1E90FF</color>
     <color name="purple_200">#80BB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

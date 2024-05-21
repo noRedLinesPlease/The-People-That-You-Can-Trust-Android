@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -137,6 +137,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
+
             else -> false
         }
     }
@@ -168,14 +169,23 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 dialog.dismiss()
                 val bundleMain = Bundle()
                 bundleMain.putBoolean("fromFragment", true)
-                navController.navigate(R.id.nav_search_companies, bundleMain)
             }
 
         }
-
+        val mDisplayMetrics = windowManager.currentWindowMetrics
+        val mDisplayWidth = mDisplayMetrics.bounds.width()
+        val mDisplayHeight = mDisplayMetrics.bounds.height()
         val alertDialog = builder.create()
         alertDialog.window?.setBackgroundDrawableResource(R.drawable.round_popup_dialog)
+
         alertDialog.show()
+        val mLayoutParams = WindowManager.LayoutParams()
+        mLayoutParams.width = (mDisplayWidth * 0.7f).toInt()
+        mLayoutParams.height = (mDisplayHeight * 0.22f).toInt()
+        mLayoutParams.dimAmount = 0.7f
+        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
+
+        alertDialog.window?.attributes = mLayoutParams
 
         val updateButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
         with(updateButton)
@@ -185,11 +195,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 else resources.getColor(R.color.dayModePopupBackgroundColor, null)
             )
             setPadding(0, 0, 0, 0)
-            setTextColor(
-                if (isDarkMode)
-                    (Color.WHITE)
-                else Color.BLACK
-            )
+            setTextColor(if (isDarkMode) getColor(R.color.teal_200) else getColor(R.color.custom_blue))
         }
 
         val dismissButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
@@ -200,11 +206,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 else resources.getColor(R.color.dayModePopupBackgroundColor, null)
             )
             setPadding(0, 0, 60, 0)
-            setTextColor(
-                if (isDarkMode)
-                    (Color.WHITE)
-                else Color.BLACK
-            )
+            setTextColor(if (isDarkMode) getColor(R.color.teal_200) else getColor(R.color.custom_blue))
         }
     }
 }
