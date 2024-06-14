@@ -19,6 +19,8 @@ class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
     val isOnline = networkConnection.isConnected.asLiveData()
     val appNeedsToBeUpdated = MutableLiveData<Boolean>()
     val dialogShowedOnce = MutableLiveData(false)
+    var versionInstalledOnPhone = ""
+    var thereWasAnError: Boolean? = null
 
     fun checkForAppUpdate(context: Context) {
         var latestVersion = ""
@@ -31,17 +33,30 @@ class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
                     doc.getElementsByClass("fe-block-yui_3_17_2_1_1715521103669_7199").text()
             } catch (e: Exception) {
                 Log.v("BM90", e.message.toString())
+                thereWasAnError = true
             }
 
-            val manager: PackageManager = context.packageManager
-            val info: PackageInfo = manager.getPackageInfo(
-                context.packageName, 0
-            )
-            val version = info.versionName
+            try {
+                val manager: PackageManager = context.packageManager
+                val info: PackageInfo = manager.getPackageInfo(
+                    context.packageName, 0
+                )
+                versionInstalledOnPhone = info.versionName
+            } catch (e: Exception) {
+                thereWasAnError = true
+                Log.v("BM90", e.message.toString())
+            }
+
 
             Handler(Looper.getMainLooper()).postDelayed(
                 {
-                    appNeedsToBeUpdated.value = version != latestVersion
+                    if (thereWasAnError != null || latestVersion.isEmpty()) {
+                        appNeedsToBeUpdated.value = false
+                    } else {
+                        appNeedsToBeUpdated.value = versionInstalledOnPhone != latestVersion
+                        Log.v("BM90", "version on phone:  $versionInstalledOnPhone")
+                        Log.v("BM90", "latest version: $latestVersion")
+                    }
                 },
                 100
             )

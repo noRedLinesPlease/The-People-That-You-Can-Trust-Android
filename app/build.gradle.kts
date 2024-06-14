@@ -13,8 +13,8 @@ android {
         applicationId = "cornhole.beanbag.thepeopleyoucantrust"
         minSdk = 30
         targetSdk = 34
-        versionCode = 13
-        versionName = "1.3"
+        versionCode = 14
+        versionName = "1.3.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

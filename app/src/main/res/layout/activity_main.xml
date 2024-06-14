@@ -18,10 +18,10 @@
         android:theme="@style/Theme.ThePeopleYouCanTrust.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
+            style="@style/Theme.ThePeopleYouCanTrust.NoActionBar"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/grey"/>
+            android:layout_height="?attr/actionBarSize" />
     </com.google.android.material.appbar.AppBarLayout>
 
 <androidx.drawerlayout.widget.DrawerLayout

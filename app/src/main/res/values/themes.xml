@@ -22,7 +22,7 @@
     <style name="Theme.ThePeopleYouCanTrust.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="backgroundColor">@color/grey</item>
+        <item name="android:background">@color/grey</item>
 
         <item name="android:iconTint">@color/purple_500</item>
     </style>
