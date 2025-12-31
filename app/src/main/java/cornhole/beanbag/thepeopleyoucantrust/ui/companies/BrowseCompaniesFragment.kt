@@ -16,6 +16,7 @@ import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.databinding.BrowseAllCompaniesLayoutBinding
 import cornhole.beanbag.thepeopleyoucantrust.ui.OnClickAdapter
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 
 class BrowseCompaniesFragment : Fragment(), OnClickAdapter {
@@ -139,9 +140,14 @@ class BrowseCompaniesFragment : Fragment(), OnClickAdapter {
     override fun navigateToWebsiteOnClick(companyWebsiteLink: String) {
         binding.errorView.visibility = View.GONE
         binding.browseCompaniesListRv.visibility = View.VISIBLE
-        val url = Uri.parse(companyWebsiteLink)
+        val url = companyWebsiteLink.toUri()
         val sendIntent = Intent(Intent.ACTION_VIEW, url)
         startActivity(sendIntent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        addCategoryListToRV()
     }
 
     override fun onPause() {

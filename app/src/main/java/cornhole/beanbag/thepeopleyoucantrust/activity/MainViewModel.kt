@@ -19,7 +19,7 @@ class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
     val isOnline = networkConnection.isConnected.asLiveData()
     val appNeedsToBeUpdated = MutableLiveData<Boolean>()
     val dialogShowedOnce = MutableLiveData(false)
-    var versionInstalledOnPhone = ""
+    var versionInstalledOnPhone: String? = null
     var thereWasAnError: Boolean? = null
 
     fun checkForAppUpdate(context: Context) {
