@@ -22,5 +22,10 @@
             android:id="@+id/nav_share_app"
             android:icon="@drawable/share_icon"
             android:title="@string/menu_share_app" />
+
+        <item
+            android:id="@+id/nav_sale_companies"
+            android:icon="@drawable/ic_percent_symbol"
+            android:title="@string/menu_company_sales" />
     </group>
 </menu>

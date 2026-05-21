@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.collections.filter
 
 class CompaniesViewModel : ViewModel() {
 
@@ -21,6 +22,8 @@ class CompaniesViewModel : ViewModel() {
     var businessCategoryList = ArrayList<BusinessCategories>()
     var isLoading = MutableLiveData(true)
     var navigatedFromFragment = false
+
+    var companiesOnSale: List<CompanyInfo> = listOf()
 
     init {
         viewModelScope.launch {
@@ -33,9 +36,9 @@ class CompaniesViewModel : ViewModel() {
                     call: Call<CompanyList>,
                     response: Response<CompanyList>
                 ) {
-                    if (!navigatedFromFragment) {
-                        Thread.sleep(1000)
-                    }
+//                    if (!navigatedFromFragment) {
+//                        Thread.sleep(1000)
+//                    }
 
                     if (response.isSuccessful) {
                         val apiResponse: CompanyList? = response.body()
@@ -57,6 +60,14 @@ class CompaniesViewModel : ViewModel() {
         }
     }
 
+    fun getCompaniesOnSale() : ArrayList<CompanyInfo> {
+        companiesOnSale = companyList.value?.filter { company ->
+            company.variantsObject.any { variant -> variant.pricingObject.isOnSale }
+        } ?: listOf()
+
+        return companiesOnSale as ArrayList<CompanyInfo>
+    }
+
     fun updateBrowseCompaniesList() {
         companyList.value?.forEach { company ->
             company.companyListingCategoryList.forEach { businessCategory ->
@@ -66,13 +77,13 @@ class CompaniesViewModel : ViewModel() {
             }
         }
         businessCategoryListFromApi.forEach {
-            businessCategoryList.add(
-                BusinessCategories(
-                    businessCategory = it,
-                    isSelected = false
+                businessCategoryList.add(
+                    BusinessCategories(
+                        businessCategory = it,
+                        isSelected = false
+                    )
                 )
-            )
+            }
+            businessCategoryList.sortBy { it.businessCategory }
         }
-        businessCategoryList.sortBy { it.businessCategory }
     }
-}

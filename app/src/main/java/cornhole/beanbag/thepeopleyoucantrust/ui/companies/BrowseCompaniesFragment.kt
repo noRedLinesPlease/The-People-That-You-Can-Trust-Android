@@ -1,7 +1,6 @@
 package cornhole.beanbag.thepeopleyoucantrust.ui.companies
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +29,7 @@ class BrowseCompaniesFragment : Fragment(), OnClickAdapter {
     private lateinit var adapter: BusinessRVAdapter
 
     private val viewModel: CompaniesViewModel by lazy {
-        ViewModelProvider(this)[CompaniesViewModel::class.java]
+        ViewModelProvider(requireActivity())[CompaniesViewModel::class.java]
     }
 
     private var unfilteredCompanyList: ArrayList<CompanyInfo> = arrayListOf()

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cornhole.beanbag.thepeopleyoucantrust.R
 import cornhole.beanbag.thepeopleyoucantrust.api.BusinessCategories
@@ -31,7 +32,7 @@ class BrowseCompaniesAdapter(
         if (!listItem.isSelected) {
             holder.businessCategoryTV.setTextColor(Color.BLUE)
         } else {
-            holder.businessCategoryTV.setTextColor(context.resources.getColor(R.color.teal_200, null))
+            holder.businessCategoryTV.setTextColor(ContextCompat.getColor(context, R.color.teal_200))
             holder.businessCategoryTV.isEnabled = false
         }
 

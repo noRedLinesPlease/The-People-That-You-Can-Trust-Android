@@ -23,17 +23,25 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.onesignal.OneSignal
+import com.onesignal.debug.LogLevel
 import cornhole.beanbag.thepeopleyoucantrust.R
+import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.databinding.ActivityMainBinding
 import cornhole.beanbag.thepeopleyoucantrust.network.NetworkConnection
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
@@ -45,6 +53,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private lateinit var navView: NavigationView
     private lateinit var viewModel: MainViewModel
     private var isInitialLoad = true
+
+    private var bannerTextString = ""
+
+    private lateinit var companiesList: List<CompanyInfo>
+
+    private val ONE_SIGNAL_APP_ID = "5f975718-7f3d-43e6-9101-e230069a4526"
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -60,6 +74,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isDarkMode = isPhoneInDarkMode(this)
+
+        OneSignal.Debug.logLevel = LogLevel.VERBOSE
+        OneSignal.initWithContext(this, ONE_SIGNAL_APP_ID)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -83,7 +100,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 R.id.nav_about_us,
                 R.id.nav_browse_companies,
                 R.id.nav_search_companies,
-                R.id.nav_share_app
+                R.id.nav_share_app,
+                R.id.nav_company_sales
             ),
             drawerLayout
         )
@@ -99,6 +117,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
+        companiesList = viewModel.companyList
+
+        lifecycleScope.launch {
+            companiesList = viewModel.getCompanies() ?: arrayListOf()
+        }
 
 
         viewModel.isOnline.observe(this) { hasInternetConnection ->
@@ -113,18 +136,21 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 binding.noInternetViewId.root.visibility = View.GONE
                 binding.hasInternetViewId.root.visibility = View.VISIBLE
 
-                if (isInitialLoad) {
-                    viewModel.checkForAppUpdate(this)
-                    binding.root.post {
-                        askNotificationPermission()
-                    }
+                lifecycleScope.launch {
+                    OneSignal.Notifications.requestPermission(false)
                 }
+                    viewModel.checkForAppUpdate(this)
             } else {
                 binding.hasInternetViewId.root.visibility = View.GONE
                 binding.noInternetViewId.root.visibility = View.VISIBLE
                 binding.appBar.visibility = View.GONE
             }
             isInitialLoad = false
+        }
+        viewModel.companiesOnSale.observe(this) { companiesList ->
+            if (!companiesList.isNullOrEmpty()) {
+                startBannerAnimation()
+            }
         }
         viewModel.appNeedsToBeUpdated.observe(this) { needsUpdate ->
             // This observer will automatically run whenever the value of appNeedsToBeUpdated changes.
@@ -166,6 +192,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 true
             }
 
+            "Company Sales" -> {
+                bundleMain.putBoolean("fromFragment", true)
+                navController.navigate(R.id.nav_company_sales, bundleMain)
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+
             else -> false
         }
     }
@@ -200,9 +233,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
 
         }
-        val mDisplayMetrics = windowManager.currentWindowMetrics
-//        val mDisplayWidth = mDisplayMetrics.bounds.width()
-//        val mDisplayHeight = mDisplayMetrics.bounds.height()
+
         val alertDialog = builder.create()
         alertDialog.window?.setBackgroundDrawableResource(R.drawable.round_popup_dialog)
 
@@ -214,10 +245,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
             val mDisplayMetrics = windowManager.currentWindowMetrics
             val mDisplayWidth = mDisplayMetrics.bounds.width()
-            val mDisplayHeight = mDisplayMetrics.bounds.height()
 
             layoutParams.width = (mDisplayWidth * 0.7f).toInt()
-            layoutParams.height = (mDisplayHeight * 0.22f).toInt()
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
             layoutParams.dimAmount = 0.7f
             layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_DIM_BEHIND
 
@@ -228,8 +258,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         with(updateButton)
         {
             setBackgroundColor(
-                if (isDarkMode) (resources.getColor(R.color.darkModePopupBackgroundColor, null))
-                else resources.getColor(R.color.dayModePopupBackgroundColor, null)
+                if (isDarkMode) ContextCompat.getColor(this@MainActivity, R.color.darkModePopupBackgroundColor)
+                else ContextCompat.getColor(this@MainActivity, R.color.dayModePopupBackgroundColor)
             )
             setPadding(0, 0, 0, 0)
             setTextColor(if (isDarkMode) getColor(R.color.teal_200) else getColor(R.color.custom_blue))
@@ -239,8 +269,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         with(dismissButton)
         {
             setBackgroundColor(
-                if (isDarkMode) resources.getColor(R.color.darkModePopupBackgroundColor, null)
-                else resources.getColor(R.color.dayModePopupBackgroundColor, null)
+                if (isDarkMode) ContextCompat.getColor(this@MainActivity, R.color.darkModePopupBackgroundColor)
+                else ContextCompat.getColor(this@MainActivity, R.color.dayModePopupBackgroundColor)
             )
             setPadding(0, 0, 60, 0)
             setTextColor(if (isDarkMode) getColor(R.color.teal_200) else getColor(R.color.custom_blue))
@@ -271,6 +301,55 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
+        }
+    }
+
+    private fun startBannerAnimation() {
+        val banner = binding.hasInternetViewId.bannerText
+        val names = arrayListOf<String>()
+        viewModel.companiesOnSale.value?.forEach {
+            names.add(it.companyName)
+        }
+        bannerTextString = getString(R.string.scrolling_banner_text)
+        banner.text = if (names.isNotEmpty())  bannerTextString  else " "
+        banner.setOnClickListener {
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_company_sales)
+
+        }
+
+        banner.ellipsize = null
+
+        // Start from the right side of the screen
+        //binding.hasInternetViewId.bannerText.translationX = screenWidth
+
+        if (isDarkMode) {
+            binding.hasInternetViewId.bannerText.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
+            binding.hasInternetViewId.bannerText.setTextColor(ContextCompat.getColor(this, R.color.white))
+        } else {
+            binding.hasInternetViewId.bannerText.setBackgroundColor(ContextCompat.getColor(this, R.color.custom_tan))
+            binding.hasInternetViewId.bannerText.setTextColor(ContextCompat.getColor(this, R.color.black))
+        }
+
+        // Measure text width to know when to reset
+        banner.post {
+            val screenWidth = resources.displayMetrics.widthPixels.toFloat()
+
+            val textWidth = banner.paint.measureText(banner.text.toString())
+
+            val params = banner.layoutParams
+            params.width = textWidth.toInt()
+            banner.layoutParams = params
+
+            val animator = androidx.core.animation.ObjectAnimator.ofFloat(
+                binding.hasInternetViewId.bannerText,
+                "translationX",
+                screenWidth,
+                -textWidth
+            )
+            animator.duration = 10000 // Adjust for speed
+            animator.repeatCount = androidx.core.animation.ValueAnimator.INFINITE
+            animator.interpolator = androidx.core.animation.LinearInterpolator()
+            animator.start()
         }
     }
 }

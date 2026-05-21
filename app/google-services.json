@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "110402117070",
+    "project_id": "the-people-you-can-trust",
+    "storage_bucket": "the-people-you-can-trust.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110402117070:android:25d6e33ce977e72c8b5f9f",
+        "android_client_info": {
+          "package_name": "cornhole.beanbag.thepeopleyoucantrust"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJUOuJB-UsTvR_6UZy8BRkxIGgqlAYQ84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

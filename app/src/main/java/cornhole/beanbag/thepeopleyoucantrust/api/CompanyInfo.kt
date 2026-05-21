@@ -16,6 +16,9 @@ data class CompanyInfo(
     @SerializedName("variantAttributes")
     var companyListingCategoryList: ArrayList<String>,
     @SerializedName("images")
-    val companyLogoList: ArrayList<CompanyLogoImage>
+    val companyLogoList: ArrayList<CompanyLogoImage>,
+    @SerializedName("variants")
+    var variantsObject: List<Variants>,
+    var isOnSale: Boolean = false
 )
 

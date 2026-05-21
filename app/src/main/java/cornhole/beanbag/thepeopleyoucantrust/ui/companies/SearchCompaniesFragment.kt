@@ -46,7 +46,7 @@ class SearchCompaniesFragment : Fragment(), OnClickAdapter {
     ): View {
         val context = requireContext()
         val viewModel: CompaniesViewModel by lazy {
-            ViewModelProvider(this)[CompaniesViewModel::class.java]
+            ViewModelProvider(requireActivity())[CompaniesViewModel::class.java]
         }
 
         _binding = SearchCompaniesFragmentBinding.inflate(inflater, container, false)

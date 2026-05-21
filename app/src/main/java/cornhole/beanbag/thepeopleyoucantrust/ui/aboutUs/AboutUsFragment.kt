@@ -1,8 +1,6 @@
 package cornhole.beanbag.thepeopleyoucantrust.ui.aboutUs
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import cornhole.beanbag.thepeopleyoucantrust.R
 import cornhole.beanbag.thepeopleyoucantrust.databinding.AboutUsFragmentBinding
 import org.jsoup.Jsoup
@@ -57,7 +59,7 @@ class AboutUsFragment : Fragment() {
         binding.progressBarView.visibility = View.VISIBLE
         binding.homeLayout.visibility = View.GONE
 
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             var header = ""
             var body = ""
             var subHeader = ""
@@ -75,21 +77,16 @@ class AboutUsFragment : Fragment() {
             } catch (e: Exception) {
                 Log.v("BM90", e.message.toString())
             }
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    binding.progressBarView.visibility = View.GONE
-                    binding.homeLayout.visibility = View.VISIBLE
-                },
-                300
-            )
 
-            activity?.runOnUiThread {
+            withContext(Dispatchers.Main) {
+                binding.progressBarView.visibility = View.GONE
+                binding.homeLayout.visibility = View.VISIBLE
                 aboutUsHeaderTV.text = header
                 aboutUsBodyTV.text = body
                 aboutUsSubHeaderTV.text = subHeader
                 aboutUsSubHeaderBodyTV.text = subHeaderBody
             }
-        }.start()
+        }
     }
 
     override fun onDestroyView() {
