@@ -1,89 +1,77 @@
 package cornhole.beanbag.thepeopleyoucantrust.ui.companies
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import org.jsoup.Jsoup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cornhole.beanbag.thepeopleyoucantrust.api.BusinessCategories
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitLogic
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.collections.filter
 
 class CompaniesViewModel : ViewModel() {
 
-    var companyList = MutableLiveData<ArrayList<CompanyInfo>>()
-    private var businessCategoryListFromApi = ArrayList<String>()
-    var businessCategoryList = ArrayList<BusinessCategories>()
-    var isLoading = MutableLiveData(true)
-    var navigatedFromFragment = false
+    private val _companyList = MutableStateFlow<List<CompanyInfo>>(emptyList())
+    val companyList: StateFlow<List<CompanyInfo>> = _companyList.asStateFlow()
 
-    var companiesOnSale: List<CompanyInfo> = listOf()
+    private val _categoryList = MutableStateFlow<List<String>>(emptyList())
+    val categoryList: StateFlow<List<String>> = _categoryList.asStateFlow()
 
-    init {
+    private val _companiesOnSale = MutableStateFlow<List<CompanyInfo>>(emptyList())
+    val companiesOnSale: StateFlow<List<CompanyInfo>> = _companiesOnSale.asStateFlow()
+
+    var companiesOnSaleWithDesc: ArrayList<String> = arrayListOf()
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    fun refresh() {
+        _isLoading.value = true
         viewModelScope.launch {
-            val retrofitApi = RetrofitLogic.retrofit
-            val service: RetrofitAPI = retrofitApi.create(RetrofitAPI::class.java)
-            val call: Call<CompanyList> =
-                service.getCompanies("PHYSICAL")
-            call.enqueue(object : Callback<CompanyList> {
-                override fun onResponse(
-                    call: Call<CompanyList>,
-                    response: Response<CompanyList>
-                ) {
-//                    if (!navigatedFromFragment) {
-//                        Thread.sleep(1000)
-//                    }
-
-                    if (response.isSuccessful) {
-                        val apiResponse: CompanyList? = response.body()
-
-                        if (apiResponse != null) {
-                            companyList.value = apiResponse.companies
-                            isLoading.value = false
-                            updateBrowseCompaniesList()
-                        } else {
-                            companyList.value = arrayListOf()
-                        }
+            val service: RetrofitAPI = RetrofitLogic.retrofit.create(RetrofitAPI::class.java)
+            service.getCompanies("PHYSICAL").enqueue(object : Callback<CompanyList> {
+                override fun onResponse(call: Call<CompanyList>, response: Response<CompanyList>) {
+                    val companies = response.body()?.companies ?: emptyList()
+                    _companyList.value = companies
+                    _categoryList.value = companies
+                        .flatMap { it.companyListingCategoryList }
+                        .distinct()
+                        .sorted()
+                    _companiesOnSale.value = companies.filter { company ->
+                        company.variantsObject.any { it.pricingObject.isOnSale }
                     }
+                    companiesOnSaleWithDesc = getSalesDescription() as ArrayList<String>
+                    _isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<CompanyList>, t: Throwable) {
-                    Log.v("BM90", "Parsing error")
+                    Log.v("BM90", "Parsing error: ${t.message}")
+                    _isLoading.value = false
                 }
             })
         }
     }
 
-    fun getCompaniesOnSale() : ArrayList<CompanyInfo> {
-        companiesOnSale = companyList.value?.filter { company ->
-            company.variantsObject.any { variant -> variant.pricingObject.isOnSale }
-        } ?: listOf()
-
-        return companiesOnSale as ArrayList<CompanyInfo>
-    }
-
-    fun updateBrowseCompaniesList() {
-        companyList.value?.forEach { company ->
-            company.companyListingCategoryList.forEach { businessCategory ->
-                if (!businessCategoryListFromApi.contains(businessCategory)) {
-                    businessCategoryListFromApi.add(businessCategory)
-                }
-            }
+    fun getCompaniesOnSale(): List<CompanyInfo> =
+        _companyList.value.filter { company ->
+            company.variantsObject.any { it.pricingObject.isOnSale }
         }
-        businessCategoryListFromApi.forEach {
-                businessCategoryList.add(
-                    BusinessCategories(
-                        businessCategory = it,
-                        isSelected = false
-                    )
-                )
-            }
-            businessCategoryList.sortBy { it.businessCategory }
+
+    fun getSalesDescription() : List<String> {
+        companiesOnSaleWithDesc.clear()
+        val companiesOnSale = getCompaniesOnSale()
+        companiesOnSale.forEach { companyOnSale ->
+            val saleDescription = companyOnSale.saleDescription
+            val singleBannerText = "** ${companyOnSale.companyName} - ${Jsoup.parse(saleDescription).text()} ** "
+            companiesOnSaleWithDesc.add(singleBannerText)
         }
+        return companiesOnSaleWithDesc
     }
+}

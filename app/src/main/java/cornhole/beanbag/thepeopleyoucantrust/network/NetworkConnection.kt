@@ -2,16 +2,22 @@ package cornhole.beanbag.thepeopleyoucantrust.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import kotlinx.coroutines.flow.Flow
+import android.net.NetworkCapabilities
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 class NetworkConnection(context: Context) {
-         private val connectivityManager =
+        private val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        private val _isConnected = MutableStateFlow(false)
-        val isConnected: Flow<Boolean> = _isConnected
+        private val initiallyConnected = connectivityManager.getNetworkCapabilities(
+            connectivityManager.activeNetwork
+        )?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+
+        private val _isConnected = MutableStateFlow(initiallyConnected)
+        val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
 
         init {
             // Observe network connectivity changes

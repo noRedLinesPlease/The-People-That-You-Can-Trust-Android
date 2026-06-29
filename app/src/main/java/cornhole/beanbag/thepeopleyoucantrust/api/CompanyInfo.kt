@@ -9,6 +9,8 @@ data class CompanyInfo(
     val companyId: String,
     @SerializedName("name")
     var companyName: String,
+    @SerializedName("description")
+    val saleDescription: String,
     @SerializedName("tags")
     var companySearchTags: ArrayList<String>,
     var searchMatches: Boolean = false,

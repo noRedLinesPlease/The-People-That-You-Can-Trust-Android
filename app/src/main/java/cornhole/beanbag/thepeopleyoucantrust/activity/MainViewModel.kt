@@ -6,8 +6,8 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.StateFlow
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
 import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
 import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
@@ -25,7 +25,7 @@ import retrofit2.Response
 
 class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
 
-    val isOnline = networkConnection.isConnected.asLiveData()
+    val isOnline: StateFlow<Boolean> = networkConnection.isConnected
     val appNeedsToBeUpdated = MutableLiveData<Boolean>()
     val dialogShowedOnce = MutableLiveData(false)
     var versionInstalledOnPhone: String? = null

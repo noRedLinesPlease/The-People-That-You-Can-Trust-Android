@@ -6,5 +6,7 @@ data class CompanyLogoImage (
     @SerializedName("url")
     val logoUrl: String,
     @SerializedName("altText")
-    val companyWebsite: String
+    val companyWebsite: String,
+    @SerializedName("availableFormats")
+    val imageFormats: ArrayList<String>
 )
