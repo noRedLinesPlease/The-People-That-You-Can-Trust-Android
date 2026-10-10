@@ -11,9 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cornhole.beanbag.thepeopleyoucantrust.R
 
 @Composable
 fun CompanySalesScreen(
@@ -31,8 +34,10 @@ fun CompanySalesScreen(
     if (salesCompanies.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "No companies currently on sale",
+                text = stringResource(R.string.no_companies_on_sale_message),
+                fontSize = 32.sp,
                 textAlign = TextAlign.Center,
+                lineHeight = 36.sp,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 24.dp)

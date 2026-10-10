@@ -8,31 +8,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
-import cornhole.beanbag.thepeopleyoucantrust.api.CompanyInfo
-import cornhole.beanbag.thepeopleyoucantrust.api.CompanyList
-import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitAPI
-import cornhole.beanbag.thepeopleyoucantrust.api.RetrofitLogic
 import cornhole.beanbag.thepeopleyoucantrust.network.NetworkConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
 
     val isOnline: StateFlow<Boolean> = networkConnection.isConnected
     val appNeedsToBeUpdated = MutableLiveData<Boolean>()
-    val dialogShowedOnce = MutableLiveData(false)
     var versionInstalledOnPhone: String? = null
     var thereWasAnError: Boolean? = null
-    var companyList: List<CompanyInfo> = listOf()
-
-    var companiesOnSale = MutableLiveData<List<CompanyInfo>>()
 
     fun checkForAppUpdate(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -70,40 +59,5 @@ class MainViewModel(networkConnection: NetworkConnection) : ViewModel() {
                 }
             }
         }
-    }
-
-    fun getCompanies() : List<CompanyInfo>? {
-        viewModelScope.launch {
-            val retrofitApi = RetrofitLogic.retrofit
-            val service: RetrofitAPI = retrofitApi.create(RetrofitAPI::class.java)
-            val call: Call<CompanyList> =
-                service.getCompanies("PHYSICAL")
-            call.enqueue(object : Callback<CompanyList> {
-                override fun onResponse(
-                    call: Call<CompanyList>,
-                    response: Response<CompanyList>
-                ) {
-                    if (response.isSuccessful) {
-                        val apiResponse: CompanyList? = response.body()
-
-                        if (apiResponse != null) {
-                            companyList = apiResponse.companies
-                            companiesOnSale.value = companyList.filter { company ->
-                                company.variantsObject.any { variant -> variant.pricingObject.isOnSale }
-                            }
-//                            isLoading.value = false
-//                            updateBrowseCompaniesList()
-                        } else {
-                            companyList = arrayListOf()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<CompanyList>, t: Throwable) {
-                    Log.v("BM90", "Parsing error")
-                }
-            })
-        }
-        return companiesOnSale.value
     }
 }

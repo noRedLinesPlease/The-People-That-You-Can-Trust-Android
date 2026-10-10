@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cornhole.beanbag.thepeopleyoucantrust.R
+import cornhole.beanbag.thepeopleyoucantrust.ui.ErrorView
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -52,14 +53,7 @@ fun BrowseCompaniesScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             companies.isEmpty() -> {
-                Text(
-                    text = stringResource(R.string.internal_error_message),
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(horizontal = 24.dp)
-                )
+                ErrorView()
             }
             else -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {

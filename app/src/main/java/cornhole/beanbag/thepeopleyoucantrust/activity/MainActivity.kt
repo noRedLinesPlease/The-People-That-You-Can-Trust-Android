@@ -131,7 +131,7 @@ private fun AppRoot(
     var updateDialogDismissed by remember { mutableStateOf(false) }
 
     LaunchedEffect(isOnline) {
-        if (isOnline == true) {
+        if (isOnline) {
             OneSignal.Notifications.requestPermission(false)
             mainViewModel.checkForAppUpdate(context)
             companiesViewModel.refresh()

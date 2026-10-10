@@ -20,7 +20,8 @@
     <string name="companies_button_text">Browse companies</string>
     <string name="no_internet_error_message">No internet connection found.</string>
     <string name="no_internet_error_message_2">Please check connection and try again</string>
-    <string name="internal_error_message">We\'re having trouble loading this page right now. We\'re on it! </string>
+    <string name="no_companies_on_sale_message"> No companies currently on sale</string>
+    <string name="internal_error_message">We\'re having trouble loading this page right now. Please try again. </string>
     <string name="app_update_title_text">App update available</string>
     <string name="app_update_body_text">Update below to see the newest features!</string>
     <string name="pop_up_dialog_update_btn_text">Update</string>

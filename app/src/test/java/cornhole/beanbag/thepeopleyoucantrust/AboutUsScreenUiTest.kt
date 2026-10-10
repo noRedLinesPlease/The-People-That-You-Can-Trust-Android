@@ -10,9 +10,9 @@ import cornhole.beanbag.thepeopleyoucantrust.ui.aboutUs.AboutUsViewModel
 import org.junit.Rule
 import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import cornhole.beanbag.thepeopleyoucantrust.ui.aboutUs.AboutUsScreen
+import cornhole.beanbag.thepeopleyoucantrust.ui.aboutUs.AboutUsScreenContent
 import org.junit.Assert.assertTrue
-import kotlin.test.Test
+import org.junit.Test
 
 @RunWith(AndroidJUnit4::class)
 class AboutUsScreenUiTest {
@@ -20,15 +20,9 @@ class AboutUsScreenUiTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    // Fake ViewModel — prevents the real network call, lets tests inject state
-    class FakeAboutUsViewModel(initialState: UiState) : AboutUsViewModel() {
-        init {
-            _uiState.value = initialState
-        }
-    }
-
     private val loadedState = AboutUsViewModel.UiState(
         isLoading = false,
+        failedToLoad = false,
         header = "About Us",
         body = "We connect buyers with trusted sellers.",
         subHeader = "Our Mission",
@@ -38,8 +32,8 @@ class AboutUsScreenUiTest {
     @Test
     fun loadingState_showsSpinner() {
         composeTestRule.setContent {
-            AboutUsScreen(
-                viewModel = FakeAboutUsViewModel(AboutUsViewModel.UiState(isLoading = true)),
+            AboutUsScreenContent(
+                uiState = loadedState.copy(isLoading = true),
                 onNavigateToCompanies = {}
             )
         }
@@ -52,8 +46,8 @@ class AboutUsScreenUiTest {
     @Test
     fun loadedState_showsHeader() {
         composeTestRule.setContent {
-            AboutUsScreen(
-                viewModel = FakeAboutUsViewModel(loadedState),
+            AboutUsScreenContent(
+                uiState = loadedState,
                 onNavigateToCompanies = {}
             )
         }
@@ -64,8 +58,8 @@ class AboutUsScreenUiTest {
     @Test
     fun loadedState_showsAllContent() {
         composeTestRule.setContent {
-            AboutUsScreen(
-                viewModel = FakeAboutUsViewModel(loadedState),
+            AboutUsScreenContent(
+                uiState = loadedState,
                 onNavigateToCompanies = {}
             )
         }
@@ -80,13 +74,13 @@ class AboutUsScreenUiTest {
         var navigated = false
 
         composeTestRule.setContent {
-            AboutUsScreen(
-                viewModel = FakeAboutUsViewModel(loadedState),
+            AboutUsScreenContent(
+                uiState = loadedState,
                 onNavigateToCompanies = { navigated = true }
             )
         }
 
-        composeTestRule.onNodeWithText("Browse Companies").performClick()
+        composeTestRule.onNodeWithText("Browse companies").performClick()
 
         assertTrue(navigated)
     }
@@ -94,12 +88,27 @@ class AboutUsScreenUiTest {
     @Test
     fun loadingState_doesNotShowContent() {
         composeTestRule.setContent {
-            AboutUsScreen(
-                viewModel = FakeAboutUsViewModel(AboutUsViewModel.UiState(isLoading = true)),
+            AboutUsScreenContent(
+                uiState = loadedState.copy(isLoading = true),
                 onNavigateToCompanies = {}
             )
         }
 
         composeTestRule.onNodeWithText("About Us").assertDoesNotExist()
+    }
+
+    @Test
+    fun apiError_showsErrorMessage() {
+        composeTestRule.setContent {
+            AboutUsScreenContent(
+                uiState = loadedState.copy(failedToLoad = true),
+                onNavigateToCompanies = {}
+            )
+        }
+
+        composeTestRule.onNodeWithText("About Us").assertDoesNotExist()
+        composeTestRule.onNodeWithText(
+            "We're having trouble loading this page right now. Please try again."
+        ).assertIsDisplayed()
     }
 }

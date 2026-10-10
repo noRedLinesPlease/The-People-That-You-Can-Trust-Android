@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cornhole.beanbag.thepeopleyoucantrust.R
+import cornhole.beanbag.thepeopleyoucantrust.ui.ErrorView
 
 @Composable
 fun AboutUsScreen(
@@ -37,11 +38,25 @@ fun AboutUsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.isLoading) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    } else {
+    AboutUsScreenContent(
+       uiState,
+        onNavigateToCompanies
+    )
+}
+@Composable
+fun AboutUsScreenContent(
+    uiState: AboutUsViewModel.UiState = AboutUsViewModel.UiState(),
+    onNavigateToCompanies: () -> Unit = {}
+) {
+    when {
+        uiState.isLoading ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+
+        uiState.failedToLoad -> ErrorView()
+
+        else ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

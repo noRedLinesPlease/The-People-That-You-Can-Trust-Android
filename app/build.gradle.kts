@@ -1,3 +1,5 @@
+import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -5,6 +7,14 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
 }
+
+val localProperties = Properties()
+
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val authToken = localProperties.getProperty("AUTH_TOKEN") ?: ""
 
 android {
     namespace = "cornhole.beanbag.thepeopleyoucantrust"
@@ -17,6 +27,8 @@ android {
         versionCode = 14
         versionName = "1.3.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "AUTH_TOKEN", "\"$authToken\"")
     }
 
     buildTypes {
@@ -29,21 +41,34 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-    kotlin {
-        compilerOptions {
-            optIn.add("kotlin.RequiresOptIn")
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
     buildToolsVersion = "35.0.0"
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
+
 kotlin {
-    jvmToolchain(17) // Or 11, but 17 is the modern standard for new Android versions
+    compilerOptions {
+        optIn.add("kotlin.RequiresOptIn")
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
+
+
+
 
 dependencies {
     implementation("androidx.compose.ui:ui-test-junit4:1.11.3")
@@ -87,6 +112,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     annotationProcessor ("com.github.bumptech.glide:compiler:5.0.7")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("androidx.test.ext:junit:1.2.1")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
