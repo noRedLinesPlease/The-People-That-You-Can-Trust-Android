@@ -22,7 +22,7 @@ open class AboutUsViewModel : ViewModel() {
         val subHeaderBody: String = ""
     )
 
-    val _uiState = MutableStateFlow(UiState())
+   private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
@@ -37,17 +37,18 @@ open class AboutUsViewModel : ViewModel() {
             var subHeaderBody = ""
             var failedToLoadContent = false
             try {
-                val doc = Jsoup.connect("https://alligator-beige-t5e3.squarespace.co/").get()
+                val doc = Jsoup.connect("https://alligator-beige-t5e3.squarespace.com/").get()
                 header = doc.getElementsByClass("fe-block-52548690efe141736640").text()
                 body = doc.getElementsByClass("fe-block-a081cdeabc4137be9f5b").text()
                 subHeader = doc.getElementsByClass("fe-block-afea2256dc047051d8ee").text()
                 subHeaderBody = doc.getElementsByClass("fe-block-57dc43433ef1172548d6").text()
-                if (header == "" || body == "" || subHeader == " "|| subHeaderBody == "") {
-                    failedToLoadContent = true
-                }
             } catch (e: Exception) {
                 failedToLoadContent = true
                 Log.v("BM90", e.message.toString())
+            }
+
+            if (header == "" || body == "" || subHeader == " "|| subHeaderBody == "") {
+                failedToLoadContent = true
             }
             withContext(Dispatchers.Main) {
                 _uiState.value = UiState(

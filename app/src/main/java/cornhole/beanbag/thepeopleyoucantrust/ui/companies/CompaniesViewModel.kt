@@ -36,7 +36,7 @@ class CompaniesViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch {
             val service: RetrofitAPI = RetrofitLogic.retrofit.create(RetrofitAPI::class.java)
-            service.getCompanies("PHYSICAL").enqueue(object : Callback<CompanyList> {
+            service.getCompanies().enqueue(object : Callback<CompanyList> {
                 override fun onResponse(call: Call<CompanyList>, response: Response<CompanyList>) {
                     val companies = response.body()?.companies ?: emptyList()
                     _companyList.value = companies
